@@ -7,22 +7,22 @@ using MillionApp.Domain.Repositories;
 
 namespace MillionApp.Application.Commands;
 
-public class CreateTraceCommand : IRequest<Result<PropertyTraceDto>>
+public class CreatePropertyTraceCommand : IRequest<Result<PropertyTraceDto>>
 {
     public PropertyTraceDto TraceDto { get; set; }
 
-    public class CreateTraceCommandHandler : IRequestHandler<CreateTraceCommand, Result<PropertyTraceDto>>
+    public class CreatePropertyTraceCommandHandler : IRequestHandler<CreatePropertyTraceCommand, Result<PropertyTraceDto>>
     {
         private readonly IPropertyTraceRepository _repository;
         private readonly IMapper _mapper;
 
-        public CreateTraceCommandHandler(IPropertyTraceRepository repository, IMapper mapper)
+        public CreatePropertyTraceCommandHandler(IPropertyTraceRepository repository, IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper;
         }
 
-        public async Task<Result<PropertyTraceDto>> Handle(CreateTraceCommand request, CancellationToken cancellationToken)
+        public async Task<Result<PropertyTraceDto>> Handle(CreatePropertyTraceCommand request, CancellationToken cancellationToken)
         {
             var result = PropertyTrace.CreatePropertyTrace(request.TraceDto.DateSale, request.TraceDto.Name, request.TraceDto.Value, request.TraceDto.Tax, request.TraceDto.PropertyId);
             if (result.IsFailure)

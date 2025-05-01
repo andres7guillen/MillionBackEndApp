@@ -6,7 +6,12 @@ namespace MillionApp.Application.Commands;
 
 public class DeletePropertyCommand : IRequest<Result<bool>>
 {
-    public Guid PropertyId { get; set; }    
+    public Guid PropertyId { get; set; }
+
+    public DeletePropertyCommand(Guid propertyId)
+    {
+        PropertyId = propertyId;
+    }
 }
 
 public class DeletePropertyCommandHandler : IRequestHandler<DeletePropertyCommand, Result<bool>>

@@ -10,7 +10,12 @@ namespace MillionApp.Application.Commands;
 public class UpdatePropertyCommand : IRequest<Result<PropertyDto>>
 {
     public Guid PropertyId { get; set; }
-    public PropertyDto Property { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string Address { get; set; } = string.Empty;
+    public double Price { get; set; }
+    public string CodeInternal { get; set; } = string.Empty;
+    public int Year { get; set; }
+    public Guid OwnerId { get; set; }
 }
 
 public class UpdatePropertyCommandHandler : IRequestHandler<UpdatePropertyCommand, Result<PropertyDto>>
@@ -32,7 +37,15 @@ public class UpdatePropertyCommandHandler : IRequestHandler<UpdatePropertyComman
 
         var property = propertyResult.Value;
 
-        var updateResult = property.Update(request.Property.Name, request.Property.Address, request.Property.Price, request.Property.CodeInternal, request.Property.Year, request.Property.OwnerId);
+        var updateResult = property.Update(
+            request.Name,
+            request.Address,
+            request.Price,
+            request.CodeInternal,
+            request.Year,
+            request.OwnerId
+        );
+
         if (updateResult.IsFailure)
             return Result.Failure<PropertyDto>(updateResult.Error);
 
@@ -44,4 +57,5 @@ public class UpdatePropertyCommandHandler : IRequestHandler<UpdatePropertyComman
         return Result.Success(dto);
     }
 }
+
 
