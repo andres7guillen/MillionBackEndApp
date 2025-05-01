@@ -6,7 +6,12 @@ namespace MillionApp.Application.Commands;
 
 public class DeleteOwnerCommand : IRequest<Result<bool>>
 {
-    public Guid OwnerId { get; set; }    
+    public Guid OwnerId { get; set; }
+
+    public DeleteOwnerCommand(Guid ownerId)
+    {
+        OwnerId = ownerId;
+    }
 }
 
 public class DeleteOwnerCommandHandler : IRequestHandler<DeleteOwnerCommand, Result<bool>>

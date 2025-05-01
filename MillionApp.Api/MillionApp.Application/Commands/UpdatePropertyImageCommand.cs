@@ -6,23 +6,23 @@ using MillionApp.Domain.Repositories;
 
 namespace MillionApp.Application.Commands;
 
-public class UpdateImageCommand : IRequest<Result<PropertyImageDto>>
+public class UpdatePropertyImageCommand : IRequest<Result<PropertyImageDto>>
 {
     public Guid Id { get; set; }
     public PropertyImageDto ImageDto { get; set; }
 }
-public class UpdateImageCommandHandler : IRequestHandler<UpdateImageCommand, Result<PropertyImageDto>>
+public class UpdatePropertyImageCommandHandler : IRequestHandler<UpdatePropertyImageCommand, Result<PropertyImageDto>>
 {
     private readonly IPropertyImageRepository _repository;
     private readonly IMapper _mapper;
 
-    public UpdateImageCommandHandler(IPropertyImageRepository repository, IMapper mapper)
+    public UpdatePropertyImageCommandHandler(IPropertyImageRepository repository, IMapper mapper)
     {
         _repository = repository;
         _mapper = mapper;
     }
 
-    public async Task<Result<PropertyImageDto>> Handle(UpdateImageCommand request, CancellationToken cancellationToken)
+    public async Task<Result<PropertyImageDto>> Handle(UpdatePropertyImageCommand request, CancellationToken cancellationToken)
     {
         var existing = await _repository.GetByIdAsync(request.Id);
         if (existing.IsFailure)
