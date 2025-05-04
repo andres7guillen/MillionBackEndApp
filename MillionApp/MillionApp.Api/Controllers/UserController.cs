@@ -37,11 +37,13 @@ namespace MillionApp.Api.Controllers
         {
             try
             {
+                string username = userCredentials.Email.Substring(0, userCredentials.Email.IndexOf('@'));
 
                 var usuario = new IdentityUser
                 {
-                    UserName = userCredentials.Name,
-                    Email = userCredentials.Email
+                    Email = userCredentials.Email,
+                    UserName = username,
+                    EmailConfirmed = true
                 };
 
                 var userCreated = await _userManager.CreateAsync(usuario, userCredentials.Password);
@@ -69,10 +71,21 @@ namespace MillionApp.Api.Controllers
         {
             try
             {
-                var result = await _signInManager.PasswordSignInAsync(userCredentials.Email, userCredentials.Password, isPersistent: false, lockoutOnFailure: false);
-                if (result.Succeeded)
+                var user = await _userManager.FindByEmailAsync(userCredentials.Email);
+
+                if (user != null)
                 {
-                    return Ok(BuildToken(userCredentials: userCredentials));
+                    var isPasswordValid = await _userManager.CheckPasswordAsync(user, userCredentials.Password);
+                    if (isPasswordValid)
+                    {
+                        return Ok(BuildToken(userCredentials: userCredentials));
+                    }
+                    else
+                    {
+                        var (code, message) = BusinessContextException.Detail(BusinessContextExceptionEnum.PasswordOrUserInvalid);
+                        var errorResponse = new ErrorResponse(code, message);
+                        return StatusCode(500, CustomResponse<ErrorResponse>.BuildError(500, errorResponse.Message));
+                    }
                 }
                 else
                 {

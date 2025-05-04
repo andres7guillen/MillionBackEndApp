@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using MillionApp.Domain.Entities;
+using System.Reflection.Emit;
 
 namespace MillionApp.Data.Context;
 
@@ -19,6 +20,7 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser, IdentityRole
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
         modelBuilder.Entity<Property>(entity =>
         {
             entity.HasKey(p => p.PropertyId);

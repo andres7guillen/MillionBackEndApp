@@ -10,11 +10,4 @@ public class UserCredentialsModel
 
     [Required]
     public string Password { get; set; } = string.Empty;
-
-    [StringLength(200)]
-    public string? Name { get; set; }
-
-    [StringLength(200)]
-    public string? SurName { get; set; }
-
 }
