@@ -60,6 +60,37 @@ public class PropertyController : ControllerBase
         return Ok(result.Value);
     }
 
+    [HttpGet("filter")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CustomResponse<object>))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(CustomResponse<object>))]
+    public async Task<IActionResult> GetFilteredProperties(
+        [FromQuery] string? name,
+        [FromQuery] string? address,
+        [FromQuery] double? price,
+        [FromQuery] string? codeInternal,
+        [FromQuery] int? year,
+        [FromQuery] Guid? ownerId)
+    {
+        var query = new GetPropertiesByFilterQuery
+        {
+            Name = name,
+            Address = address,
+            Price = price,
+            CodeInternal = codeInternal,
+            Year = year,
+            OwnerId = ownerId
+        };
+
+        var result = await _mediator.Send(query);
+
+        if (result.IsFailure)
+        {
+            return NotFound(CustomResponse<object>.BuildError(404, result.Error));
+        }
+
+        return Ok(CustomResponse<object>.BuildSuccess(result.Value));
+    }
+
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CustomResponse<object>))]
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(CustomResponse<object>))]
@@ -77,7 +108,7 @@ public class PropertyController : ControllerBase
         return Ok(result.Value);
     }
 
-    [HttpPut("{id}")]
+    [HttpPut("{id}/update")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CustomResponse<object>))]
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(CustomResponse<object>))]
     public async Task<IActionResult> UpdateProperty(Guid id, [FromBody] UpdatePropertyCommand command)
@@ -101,7 +132,7 @@ public class PropertyController : ControllerBase
         return Ok(result.Value);
     }
 
-    [HttpPut("{id}")]
+    [HttpPut("{id}/change-price")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CustomResponse<object>))]
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(CustomResponse<object>))]
     public async Task<IActionResult> ChangePrice(Guid id, [FromBody] ChangePriceCommand command) 
