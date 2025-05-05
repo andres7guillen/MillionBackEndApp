@@ -22,6 +22,12 @@ public class BusinessContextException : BusinessException
         {
             BusinessContextExceptionEnum.PasswordOrUserInvalid => new Tuple<int, string>(code, "Password or email invalid."),
             BusinessContextExceptionEnum.ErrorRegisteringUser => new Tuple<int, string>(code, "an error occurred while registering or adding a user."),
+            BusinessContextExceptionEnum.NoPropertiesFound => new Tuple<int, string>(code, "No propertires found"),
+            BusinessContextExceptionEnum.PropertyIdIsmatch => new Tuple<int, string>(code, "Property ID mismatch"),
+            BusinessContextExceptionEnum.ErrorCreatingProperty => new Tuple<int, string>(code, "An error ocurred while trying to save the property."),
+            BusinessContextExceptionEnum.ErrorUpdatingProperty => new Tuple<int, string>(code, "An error ocurred while trying to update the property"),
+            BusinessContextExceptionEnum.ErrorChangingPrice => new Tuple<int, string>(code, "An error ocurred while trying to change the price of the entity"),
+            BusinessContextExceptionEnum.ErrorRemovingProperty => new Tuple<int, string>(code, "An error ocurred while trying to remove the property"),
             
             _ => new Tuple<int, string>(code, "Unknown Error")
         };
@@ -38,5 +44,13 @@ public enum BusinessContextExceptionEnum
 {
     //1000 Login Security
     PasswordOrUserInvalid = 1000,
-    ErrorRegisteringUser = 1001    
+    ErrorRegisteringUser = 1001,
+        
+    //2000 Business
+    NoPropertiesFound = 2001,
+    PropertyIdIsmatch = 2002,
+    ErrorCreatingProperty = 2003,
+    ErrorUpdatingProperty = 2004,
+    ErrorChangingPrice = 2005,
+    ErrorRemovingProperty = 2006
 }

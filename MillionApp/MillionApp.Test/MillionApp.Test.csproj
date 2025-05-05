@@ -12,6 +12,7 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="14.0.0" />
     <PackageReference Include="coverlet.collector" Version="6.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.15" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
     <PackageReference Include="Moq" Version="4.20.72" />
     <PackageReference Include="NUnit" Version="3.14.0" />
@@ -21,6 +22,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MillionApp.Application\MillionApp.Application.csproj" />
+    <ProjectReference Include="..\MillionApp.Data\MillionApp.Data.csproj" />
+    <ProjectReference Include="..\MillionApp.Infrastructure\MillionApp.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>
