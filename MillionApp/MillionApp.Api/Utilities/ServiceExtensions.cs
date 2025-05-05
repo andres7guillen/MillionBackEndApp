@@ -28,7 +28,7 @@ public static class ServiceCollectionExtensions
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(
             Assembly.GetExecutingAssembly(),
 
-            // Comandos existentes
+            // Comandos
             typeof(AddPropertyImageCommand).Assembly,
             typeof(ChangePriceCommand).Assembly,
             typeof(CreateOwnerCommand).Assembly,
@@ -44,7 +44,7 @@ public static class ServiceCollectionExtensions
             typeof(UpdatePropertyImageCommand).Assembly,
             typeof(UpdatePropertyTraceCommand).Assembly,
 
-            // Queries existentes
+            // Queries
             typeof(GetAllPropertiesQuery).Assembly,
             typeof(GetPropertyByIdQuery).Assembly,
             typeof(GetAllOwnersQuery).Assembly,
@@ -52,7 +52,8 @@ public static class ServiceCollectionExtensions
             typeof(GetAllPropertyImagesQuery).Assembly,
             typeof(GetPropertyImageByIdQuery).Assembly,
             typeof(GetAllPropertyTracesQuery).Assembly,
-            typeof(GetPropertyTraceByIdQuery).Assembly
+            typeof(GetPropertyTraceByIdQuery).Assembly,
+            typeof(GetPropertiesByFilterQuery).Assembly
         ));
 
         return services;

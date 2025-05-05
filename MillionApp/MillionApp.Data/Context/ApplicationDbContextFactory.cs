@@ -15,8 +15,7 @@ public class ApplicationDbContextFactory : IDesignTimeDbContextFactory<Applicati
         var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
 
         // Reemplaza con tu cadena de conexión real
-        optionsBuilder.UseSqlServer("Data Source=ANDRES\\SQLEXPRESS;Initial Catalog=MillionAppDb;Persist Security Info=True;User ID=sa;Password=Y0k0gawA_19929495;Trust Server Certificate=True;");
-        //optionsBuilder.UseSqlServer("Data Source=YOUR_SERVER;Initial Catalog=MillionAppDb;Persist Security Info=True;User ID=sa;Password=UOUR_PASSWORD;Trust Server Certificate=True;");
+        optionsBuilder.UseSqlServer("Data Source=YOUR_SERVER;Initial Catalog=MillionAppDb;Persist Security Info=True;User ID=sa;Password=UOUR_PASSWORD;Trust Server Certificate=True;");
 
         return new ApplicationDbContext(optionsBuilder.Options);
     }
