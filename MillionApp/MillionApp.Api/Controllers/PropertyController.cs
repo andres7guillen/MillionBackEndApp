@@ -3,9 +3,12 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MillionApp.Api.Middleware;
+using MillionApp.Api.Models.Security;
 using MillionApp.Application.Commands;
 using MillionApp.Application.Queries;
 using MillionApp.Domain.Dtos;
+using MillionApp.Domain.Exceptions;
 
 namespace MillionApp.Api.Controllers;
 
@@ -23,62 +26,118 @@ public class PropertyController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<PropertyDto>>> GetAllProperties()
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CustomResponse<object>))]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(CustomResponse<object>))]
+    public async Task<IActionResult> GetAllProperties()
     {
         var query = new GetAllPropertiesQuery();
         var result = await _mediator.Send(query);
 
         if (result.IsFailure)
-            return BadRequest(result.Error);
+        {
+            var (code, message) = BusinessContextException.Detail(BusinessContextExceptionEnum.NoPropertiesFound);
+            var errorResponse = new ErrorResponse(code, message);
+            return StatusCode(500, CustomResponse<ErrorResponse>.BuildError(500, errorResponse.Message));
+        }
 
         return Ok(result.Value);
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<PropertyDto>> GetPropertyById(Guid id)
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CustomResponse<object>))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(CustomResponse<object>))]
+    public async Task<IActionResult> GetPropertyById(Guid id)
     {
         var query = new GetPropertyByIdQuery(id);
         var result = await _mediator.Send(query);
 
         if (result.IsFailure)
-            return NotFound(result.Error);
-
+        {
+            var (code, message) = BusinessContextException.Detail(BusinessContextExceptionEnum.NoPropertiesFound);
+            var errorResponse = new ErrorResponse(code, message);
+            return StatusCode(404, CustomResponse<ErrorResponse>.BuildError(404, errorResponse.Message));
+        }
         return Ok(result.Value);
     }
 
     [HttpPost]
-    public async Task<ActionResult<PropertyDto>> CreateProperty([FromBody] CreatePropertyCommand command)
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CustomResponse<object>))]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(CustomResponse<object>))]
+    public async Task<IActionResult> CreateProperty([FromBody] CreatePropertyCommand command)
     {
         var result = await _mediator.Send(command);
 
         if (result.IsFailure)
-            return BadRequest(result.Error);
+        {
+            var (code, message) = BusinessContextException.Detail(BusinessContextExceptionEnum.ErrorCreatingProperty);
+            var errorResponse = new ErrorResponse(code, message);
+            return StatusCode(500, CustomResponse<ErrorResponse>.BuildError(500, errorResponse.Message));
+        }
 
-        return CreatedAtAction(nameof(GetPropertyById), new { id = result.Value.PropertyId }, result.Value);
+        return Ok(result.Value);
     }
 
     [HttpPut("{id}")]
-    public async Task<ActionResult> UpdateProperty(Guid id, [FromBody] UpdatePropertyCommand command)
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CustomResponse<object>))]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(CustomResponse<object>))]
+    public async Task<IActionResult> UpdateProperty(Guid id, [FromBody] UpdatePropertyCommand command)
     {
         if (id != command.PropertyId)
-            return BadRequest("Property ID mismatch");
+        {
+            var (code, message) = BusinessContextException.Detail(BusinessContextExceptionEnum.PropertyIdIsmatch);
+            var errorResponse = new ErrorResponse(code, message);
+            return StatusCode(500, CustomResponse<ErrorResponse>.BuildError(500, errorResponse.Message));
+        }
 
         var result = await _mediator.Send(command);
 
         if (result.IsFailure)
-            return BadRequest(result.Error);
+        {
+            var (code, message) = BusinessContextException.Detail(BusinessContextExceptionEnum.ErrorUpdatingProperty);
+            var errorResponse = new ErrorResponse(code, message);
+            return StatusCode(500, CustomResponse<ErrorResponse>.BuildError(500, errorResponse.Message));
+        }
 
-        return NoContent();
+        return Ok(result.Value);
+    }
+
+    [HttpPut("{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CustomResponse<object>))]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(CustomResponse<object>))]
+    public async Task<IActionResult> ChangePrice(Guid id, [FromBody] ChangePriceCommand command) 
+    {
+        if (id != command.PropertyId)
+        {
+            var (code, message) = BusinessContextException.Detail(BusinessContextExceptionEnum.PropertyIdIsmatch);
+            var errorResponse = new ErrorResponse(code, message);
+            return StatusCode(500, CustomResponse<ErrorResponse>.BuildError(500, errorResponse.Message));
+        }
+
+        var result = await _mediator.Send(command);
+
+        if (result.IsFailure)
+        {
+            var (code, message) = BusinessContextException.Detail(BusinessContextExceptionEnum.ErrorChangingPrice);
+            var errorResponse = new ErrorResponse(code, message);
+            return StatusCode(500, CustomResponse<ErrorResponse>.BuildError(500, errorResponse.Message));
+        }
+
+        return Ok(result.Value);
+
     }
 
     [HttpDelete("{id}")]
-    public async Task<ActionResult> DeleteProperty(Guid id)
+    public async Task<IActionResult> DeleteProperty(Guid id)
     {
         var command = new DeletePropertyCommand(id);
         var result = await _mediator.Send(command);
 
         if (result.IsFailure)
-            return BadRequest(result.Error);
+        {
+            var (code, message) = BusinessContextException.Detail(BusinessContextExceptionEnum.ErrorRemovingProperty);
+            var errorResponse = new ErrorResponse(code, message);
+            return StatusCode(500, CustomResponse<ErrorResponse>.BuildError(500, errorResponse.Message));
+        }
 
         return NoContent();
     }
